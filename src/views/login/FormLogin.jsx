@@ -34,9 +34,10 @@ const FormLogin = () => {
 
   const handleGoogleLogin = () => {
     // lógica de login com o Google aqui
-    
-    window.location.href = `${ENDERECO_API}api/google-login`;
+    navigate('/pagina-manutencao');
   };
+    //window.location.href = `${ENDERECO_API}api/google-login`;
+  
 
   const handleCadastro = () => {
     if (username !== '' && senha !== '') {

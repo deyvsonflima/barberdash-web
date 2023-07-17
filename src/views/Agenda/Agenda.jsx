@@ -1,8 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
+import { ENDERECO_API } from '../../views/util/Constantes';
 const Agenda = () => {
   const navigate = useNavigate();
+  //const [cortes, setCortes] = useState([]);
+  const [agendamento, setAgendamento] = useState({
+    nome: '',
+    telefone: '',
+    data: '',
+    horario: '',
+  });
+
+ // useEffect(() => {
+   // const fetchCortes = async ('https://sua-api.com/cortesdecabelo/api/agendamento', agendamento) => {
+  //    try {
+   //     const response = await axios.get();
+   //     setCortes(response.data);
+   //   } catch (error) {
+   //     console.log(error);
+  //    }
+   // };
+
+    //fetchCortes();
+  //}, []);
+
+  const handleAgendamento = (corteId) => {
+    const corteSelecionado = cortes.find((corte) => corte.id === corteId);
+
+    setAgendamento({
+      ...agendamento,
+      corteId,
+      nome: corteSelecionado.nome,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Fazer a chamada à API para enviar os dados do agendamento
+      await axios.post(ENDERECO_API + 'api/cliente/', agendamento);
+
+      // Limpar os campos do formulário e exibir uma mensagem de sucesso
+      setAgendamento({
+        nome: '',
+        telefone: '',
+        data: '',
+        horario: '',
+      });
+      alert('Agendamento realizado com sucesso!');
+    } catch (error) {
+      // Tratar erros de chamada à API
+      console.log(error);
+      alert('Ocorreu um erro ao realizar o agendamento.');
+    }
+  };
 
   const goBack = () => {
     navigate(-1);
@@ -27,7 +80,7 @@ const Agenda = () => {
         referrerPolicy="no-referrer"
       />
       <link rel="shortcut icon" href="img/Dash.ico" type="image/x-icon" />
-    
+
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -113,9 +166,9 @@ const Agenda = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a  className="nav-link" href="inicio-tela">
+                <a className="nav-link" onClick={goBack}>
                   Voltar
-                  </a>
+                </a>
               </li>
             </ul>
             <form className="d-flex" role="search">
@@ -138,189 +191,68 @@ const Agenda = () => {
       <div className="container mt-5">
         <h2 className="destaque">Cortes de cabelo</h2>
         <div className="row">
-          <div className="col-md-4">
-            <div className="card">
-              <img src="img/corte americano.jpg" className="card-img-top" alt="Corte 1" />
-              <div className="card-body">
-                <h5 className="card-title">Corte Americano</h5>
-                <p className="card-text">Descrição do corte americano.</p>
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal1"
-                >
-                  Ver Mais
-                </a>
-                &nbsp;
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalAgendamento"
-                >
-                  Agendar
-                </a>
+          {cortes.map((corte) => (
+            <div className="col-md-4" key={corte.id}>
+              <div className="card">
+                <img src={corte.imagem} className="card-img-top" alt={corte.nome} />
+                <div className="card-body">
+                  <h5 className="card-title">{corte.nome}</h5>
+                  <p className="card-text">{corte.descricao}</p>
+                  <a
+                    href="#"
+                    className="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target={`#modal${corte.id}`}
+                  >
+                    Ver Mais
+                  </a>
+                  &nbsp;
+                  <a
+                    href="#"
+                    className="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgendamento"
+                    onClick={() => handleAgendamento(corte.id)}
+                  >
+                    Agendar
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img src="img/corte2.jpeg" className="card-img-top" alt="Corte 2" />
-              <div className="card-body">
-                <h5 className="card-title">Corte Clássico</h5>
-                <p className="card-text">Descrição do corte clássico.</p>
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal2"
-                >
-                  Ver Mais
-                </a>
-                &nbsp;
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalAgendamento"
-                >
-                  Agendar
-                </a>
+          ))}
+        </div>
+      </div>
+      {/* Modals */}
+      {cortes.map((corte) => (
+        <div
+          className="modal fade"
+          id={`modal${corte.id}`}
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          key={corte.id}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  {corte.nome}
+                </h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
               </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <img src="img/corte reflexo.jpg" className="card-img-top" alt="Corte 3" />
-              <div className="card-body">
-                <h5 className="card-title">Corte Descolado</h5>
-                <p className="card-text">Descrição do corte descolado.</p>
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal3"
-                >
-                  Ver Mais
-                </a>
-                &nbsp;
-                <a
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalAgendamento"
-                >
-                  Agendar
-                </a>
+              <div className="modal-body">
+                <img src={corte.imagem} alt={corte.nome} />
+                <p>{corte.descricaoDetalhada}</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Fechar
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* Modal 1 */}
-      <div
-        className="modal fade"
-        id="modal1"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Corte Americano
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-            </div>
-            <div className="modal-body">
-              <img src="img/corte americano.jpg" alt="Corte Americano" />
-              <p>
-                Descrição detalhada do corte americano. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Phasellus eleifend risus et massa tincidunt, sed congue erat
-                malesuada. Nam ut libero lorem. Morbi gravida tincidunt lectus, vel suscipit dolor
-                pellentesque id. Sed varius nunc ut eros consequat, ac tincidunt elit interdum. Duis
-                auctor nulla sed vestibulum lobortis.
-              </p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Modal 2 */}
-      <div
-        className="modal fade"
-        id="modal2"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Corte Clássico
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-            </div>
-            <div className="modal-body">
-              <img src="img/corte2.jpeg" alt="Corte Clássico" />
-              <p>
-                Descrição detalhada do corte clássico. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Phasellus eleifend risus et massa tincidunt, sed congue erat
-                malesuada. Nam ut libero lorem. Morbi gravida tincidunt lectus, vel suscipit dolor
-                pellentesque id. Sed varius nunc ut eros consequat, ac tincidunt elit interdum. Duis
-                auctor nulla sed vestibulum lobortis.
-              </p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Modal 3 */}
-      <div
-        className="modal fade"
-        id="modal3"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Corte Descolado
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-            </div>
-            <div className="modal-body">
-              <img src="img/corte reflexo.jpg" alt="Corte Descolado" />
-              <p>
-                Descrição detalhada do corte descolado. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Phasellus eleifend risus et massa tincidunt, sed congue erat
-                malesuada. Nam ut libero lorem. Morbi gravida tincidunt lectus, vel suscipit dolor
-                pellentesque id. Sed varius nunc ut eros consequat, ac tincidunt elit interdum. Duis
-                auctor nulla sed vestibulum lobortis.
-              </p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Modal Agendamento */}
+      ))}
       <div
         className="modal fade"
         id="modalAgendamento"
@@ -337,30 +269,58 @@ const Agenda = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
             </div>
             <div className="modal-body">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="inputNome" className="form-label">
                     Nome
                   </label>
-                  <input type="text" className="form-control" id="inputNome" required />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="inputNome"
+                    value={agendamento.nome}
+                    onChange={(e) => setAgendamento({ ...agendamento, nome: e.target.value })}
+                    required
+                  />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="inputTelefone" className="form-label">
                     Telefone
                   </label>
-                  <input type="tel" className="form-control" id="inputTelefone" required />
+                  <input
+                    type="tel"
+                    className="form-control"
+                    id="inputTelefone"
+                    value={agendamento.telefone}
+                    onChange={(e) => setAgendamento({ ...agendamento, telefone: e.target.value })}
+                    required
+                  />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="inputData" className="form-label">
                     Data
                   </label>
-                  <input type="date" className="form-control" id="inputData" required />
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="inputData"
+                    value={agendamento.data}
+                    onChange={(e) => setAgendamento({ ...agendamento, data: e.target.value })}
+                    required
+                  />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="inputHorario" className="form-label">
                     Horário
                   </label>
-                  <input type="time" className="form-control" id="inputHorario" required />
+                  <input
+                    type="time"
+                    className="form-control"
+                    id="inputHorario"
+                    value={agendamento.horario}
+                    onChange={(e) => setAgendamento({ ...agendamento, horario: e.target.value })}
+                    required
+                  />
                 </div>
                 <div className="modal-footer">
                   <button type="submit" className="btn btn-primary">
