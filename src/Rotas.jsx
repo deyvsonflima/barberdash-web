@@ -13,9 +13,11 @@ import ListProduto from './views/produto/ListProduto';
 import FormRecuperarSenha from './views/login/FormRecuperarSenha';
 import FormConfirmarCodigo from './views/login/FormConfirmarCodigo';
 import InicioTela from './views/inicioTela/InicioTela';
-import Agenda from './views/Agenda/Agenda';
 import Index from './views/home/Index';
 import PaginaManutencao from './views/paginaManutencao/PaginaManutencao';
+import Agendamento from './views/agendamento/Agendamento';
+import Cortes from './views/agendamento/Cortes';
+
 
 
 
@@ -44,8 +46,10 @@ function AppRouter() {
 
       <Route path="/confirmar-codigo" element={<FormConfirmarCodigo />} />
       <Route path="/inicio-tela" element={<InicioTela />} />
-      <Route path="/form-agenda" element={<Agenda />} />
+      
       <Route path="/pagina-manutencao" element={<PaginaManutencao />} />
+      <Route path="/agendamento" element={<Agendamento />} />
+      <Route path="/cortes" element={<Cortes />} />
      
 
       {/* Redirecionar para a página inicial se a rota não for encontrada */}

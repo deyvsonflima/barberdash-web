@@ -197,8 +197,8 @@ const InicioTela = () => {
                 barbeiros experientes garantem que você saia com um visual impecável
                 e confiante.
               </p>
-              <a className="btn btn-primary" href="form-agenda" role="button">
-                Agendar um horário
+              <a className="btn btn-primary" href="Cortes e Produtos" role="button">
+              Cortes e Produtos
               </a>
             </div>
             <br />
